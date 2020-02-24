@@ -13,7 +13,7 @@ echo $3
 
 docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
   -v /usr/bin/docker:/usr/bin/docker --rm \
-  singlecellpipelinetest/single_cell_pipeline:$TAG \
+  singlecellpipelinetest/single_cell_pipeline:v0.5.16 \
   single_cell alignment --input_yaml tests/jenkins/align/inputs.yaml \
   --library_id A97318A --maxjobs 4 --nocleanup --sentinel_only  \
   --context_config tests/jenkins/align/context_config.yaml \
