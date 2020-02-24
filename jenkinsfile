@@ -3,7 +3,8 @@ pipeline{
             label 'scpipeline'
     }
     environment { 
-        AZURE_CLIENT_ID = credentials('azure_client_id')
+      //  AZURE_CLIENT_ID = credentials('azure_client_id')
+      //
         AZURE_CLIENT_SECRET = credentials('azure_secret_key')
         DOCKERHUB = credentials('docker_douglas')
         SINGLECELLTESTSETS = credentials('singlecelltestsets')
