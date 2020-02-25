@@ -8,9 +8,6 @@ mkdir -p ALIGN/ref_test_data
 docker run -v $PWD:$PWD -w $PWD $3/azurecli:v0.0.1 \
   az storage blob download-batch -s alignment -d ALIGN/ref_test_data --account-name $1 --account-key $2
 
-echo "\n\n\n\npeofnpowefnjp'ownewfp'on"
-echo $3
-
 docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
   -v /usr/bin/docker:/usr/bin/docker --rm \
   $3/single_cell_pipeline:$TAG \

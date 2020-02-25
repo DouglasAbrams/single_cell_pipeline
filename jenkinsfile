@@ -21,16 +21,16 @@ pipeline{
        }
        stage('runtests'){
          parallel{
-             stage('align'){
-                 steps{
-                   sh 'bash tests/jenkins/align/align.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-                 }
-             }
-           //  stage('hmmcopy'){
+           //  stage('align'){
            //      steps{
-           //        sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS'
-           //     }
-           // }
+           //        sh 'bash tests/jenkins/align/align.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+           //      }
+           //  }
+             stage('hmmcopy'){
+                 steps{
+                   sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS'
+                }
+            }
            // stage('annotation'){
            //     steps{
            //       sh 'bash tests/jenkins/annotation/annotation.sh singlecelltestsets $SINGLECELLTESTSETS'
