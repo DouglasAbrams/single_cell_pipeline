@@ -18,13 +18,6 @@ def get_inputs(path, library_id):
     return metrics, reads
 
 
-def compare_hmmcopy(ref_metrics, metrics,
-                    ref_reads, reads):
-
-    compare.compare_metrics(ref_metrics, metrics)
-    compare.compare_reads(ref_reads, reads)
-
-
 if __name__ == "__main__":
     output_path = sys.argv[1]
     output_lib = sys.argv[2]
@@ -35,5 +28,5 @@ if __name__ == "__main__":
     ref_metrics, ref_reads = get_inputs(ref_path, "A97318A")
     metrics, reads = get_inputs(output_path, output_lib)
 
-    compare_hmmcopy(ref_metrics, metrics,
-                    ref_reads, reads)
+    compare.compare_metrics(ref_metrics, metrics)
+    compare.compare_reads(ref_reads, reads)

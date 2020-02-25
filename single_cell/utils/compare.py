@@ -1,7 +1,7 @@
 '''
 Created on Jun 14, 2018
 
-@author: dgrewal
+@author: douglas
 '''
 import warnings
 import numpy as np
@@ -10,30 +10,30 @@ import pysam
 import os
 import pandas as pd
 
-class Comparer():
-    def __init__(self, func, ref, to_compare):
-        self.func = func
-        self.ref = ref
-        self.to_compare = to_compare
-
-    def compare(self):
-        self.func(self.ref, self.to_compare)
-
-def run_comparisons(comparisons):
-    output = ""
-    error = False
-
-    for comparison in comparisons:
-        func = comparison[0]
-        ref = comparison[1]
-        to_compare = comparison[2]
-        try:
-            Comparer(func, ref, to_compare).compare()
-            output+= "\nsuccess: {}: {} {}".format(func, ref, to_compare)
-        except AssertionError:
-            error = True
-            output+= "\nerror: {}: {} {}".format(func, ref, to_compare)
-    return output, error
+# class Comparer():
+#     def __init__(self, func, ref, to_compare):
+#         self.func = func
+#         self.ref = ref
+#         self.to_compare = to_compare
+#
+#     def compare(self):
+#         self.func(self.ref, self.to_compare)
+#
+# def run_comparisons(comparisons):
+#     output = ""
+#     error = False
+#
+#     for comparison in comparisons:
+#         func = comparison[0]
+#         ref = comparison[1]
+#         to_compare = comparison[2]
+#         try:
+#             Comparer(func, ref, to_compare).compare()
+#             output+= "\nsuccess: {}: {} {}".format(func, ref, to_compare)
+#         except AssertionError:
+#             error = True
+#             output+= "\nerror: {}: {} {}".format(func, ref, to_compare)
+#     return output, error
 
 def exact_compare_cols(data, reference, column_name):
     data_index = set(data.index)
@@ -89,7 +89,7 @@ def load(file, by, reindex = False):
 
     loaded = csvutils.read_csv_and_yaml(file)
 
-    loaded = loaded.sort_values(by, ascending = [True] * len(by))
+    loaded = loaded.sort_values(by, ascending=[True] * len(by))
 
     if reindex:
         loaded = loaded.set_index(by)
@@ -111,27 +111,45 @@ def has_match(data, s1, e1, s2, e2):
     return False
 
 def bkps_starts_ends_overlap(data, refdata):
-    print (data)
-    assert set(data.chrom1.unique()) == set(refdata.chrom1.unique())
-    assert set(data.chrom2.unique()) == set(refdata.chrom2.unique())
 
-    chromsets = set([(c1, c2) for c1, c2 in zip(data.chrom1, data.chrom2)])
+    assert data.chrom1.equals(refdata.chrom1)
+    assert data.chrom2.equals(refdata.chrom2)
 
-    for chroms in chromsets:
-        chromdata = data.loc[(data.chrom1 == chroms[0]) 
-                                & (data.chrom2 == chroms[1])]
-        chromref = refdata.loc[(refdata.chrom1 == chroms[0]) 
-                                & (refdata.chrom2 == chroms[1])]
+    for index in refdata.index:
+        ref_s1 = refdata.start1[index]
+        ref_e1 = refdata.end1[index]
+        ref_s2 = refdata.start2[index]
+        ref_e2 = refdata.end2[index]
 
-        for (i, refbkt), (i, bkt) in zip(chromref.iterrows(), chromdata.iterrows()):
-            if not has_match(chromdata, refbkt.start1, refbkt.end1, 
-                                refbkt.start2, refbkt.end2):
-                return False
+        s1 = data.start1[index]
+        e1 = data.end1[index]
+        s2 = data.start2[index]
+        e2 = data.end2[index]
 
-            if not has_match(chromref, bkt.start1, bkt.end1, 
-                                bkt.start2, bkt.end2):
-                return False
+        if not (ref_s1 < s1 < ref_e1) or not (s1 < ref_e1 < e1):
+            return False
+
+        if not (ref_s2 < s2 < ref_e2) or not (s2 < ref_e1 < e2):
+            return False
+
     return True
+    # chromsets = set([(c1, c2) for c1, c2 in zip(data.chrom1, data.chrom2)])
+    #
+    # for chroms in chromsets:
+    #     chromdata = data.loc[(data.chrom1 == chroms[0])
+    #                             & (data.chrom2 == chroms[1])]
+    #     chromref = refdata.loc[(refdata.chrom1 == chroms[0])
+    #                             & (refdata.chrom2 == chroms[1])]
+    #
+    #     for (i, refbkt), (i, bkt) in zip(chromref.iterrows(), chromdata.iterrows()):
+    #         if not has_match(chromdata, refbkt.start1, refbkt.end1,
+    #                             refbkt.start2, refbkt.end2):
+    #             return False
+    #
+    #         if not has_match(chromref, bkt.start1, bkt.end1,
+    #                             bkt.start2, bkt.end2):
+    #             return False
+    # return True
         
 def compare_infer_haps(data, refdata):
     data = load(data, ["chromosome", "position"], reindex = True)
@@ -141,8 +159,8 @@ def compare_infer_haps(data, refdata):
 
     assert similar
 
-    data = data[data.index.isin(shared_calls)]
-    refdata = refdata[refdata.index.isin(shared_calls)]
+    data = data[data.index.isin(shared)]
+    refdata = refdata[refdata.index.isin(shared)]
 
     compare_tables(data, refdata)
 
@@ -294,17 +312,17 @@ def bam_counts_match(expected_counts, interval, bam):
 
 def compare_breakpoint_calls(calls, refcalls): 
 
-    sort_by = ["chrom1", "start1", "chrom2", "start2"]
+    sort_by = ["breakpoint_id"]
 
-    calls = load(calls, sort_by)
-    refcalls = load(refcalls, sort_by)
+    calls = load(calls, sort_by, True)
+    refcalls = load(refcalls, sort_by, True)
 
     assert bkps_starts_ends_overlap(calls, refcalls)
 
     exact_match = ["strands", "type"]
     approx_match = ["max_pos1", "max_chr1", "max_pos1", "confidence_interval_chr1",
                     "confidence_interval_start1", "confidence_interval_end1", "max_chr2",
-                    "max_pos2", "confidence_interval_chr2","confidence_interval_start2", 
+                    "max_pos2", "confidence_interval_chr2", "confidence_interval_start2",
                     "confidence_interval_end2", "score", "None_SR", "None_PE"]
 
     common_cols = check_for_missing_cols(calls, refcalls)
@@ -330,8 +348,8 @@ def compare_reads(readsdata, refreadsdata):
 
 
 def compare_metrics(metrics, refmetrics):
-    metrics = load(metrics, ["cell_id"], reindex = True)
-    refmetrics = load(refmetrics, ["cell_id"], reindex = True)
+    metrics = load(metrics, ["cell_id"], reindex=True)
+    refmetrics = load(refmetrics, ["cell_id"], reindex=True)
 
     compare_tables(metrics, refmetrics)
 

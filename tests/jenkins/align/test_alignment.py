@@ -19,7 +19,6 @@ def get_inputs(path, library_id):
 def compare_alignment(ref_metrics, metrics, 
                     ref_gc_metrics, gc_metrics):
 
-    
     compare.compare_metrics(ref_metrics, metrics)
     compare.compare_metrics(ref_gc_metrics, gc_metrics)
 
