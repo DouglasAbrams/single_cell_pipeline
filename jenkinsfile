@@ -28,7 +28,7 @@ pipeline{
            //  }
              stage('hmmcopy'){
                  steps{
-                   sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS'
+                   sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
                 }
             }
            // stage('annotation'){
