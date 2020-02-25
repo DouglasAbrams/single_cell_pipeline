@@ -10,6 +10,4 @@ docker build -t scgenome -f docker/scgenome/dockerfile .
 
 docker tag scgenome $REGISTRY/$ORG/scgenome:$TAG
 
-echo "\n\nWEHEWFOIFW \N\N"
-
 docker push $REGISTRY/$ORG/scgenome:$TAG

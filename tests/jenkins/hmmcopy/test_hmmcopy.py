@@ -2,7 +2,8 @@ import os.path
 import sys
 from single_cell.utils import compare
 
-def get_inputs(path, library_id ):
+
+def get_inputs(path, library_id):
     '''
     get metrics and gc metrics given a directory and library
     :param path:  path to metrics files
@@ -16,17 +17,13 @@ def get_inputs(path, library_id ):
 
     return metrics, reads
 
+
 def compare_hmmcopy(ref_metrics, metrics,
                     ref_reads, reads):
 
-    stdout, error = compare.run_comparisons([
-        (compare.compare_metrics, ref_metrics, metrics),
-        (compare.compare_reads, ref_reads, reads)
-    ])
+    compare.compare_metrics(ref_metrics, metrics)
+    compare.compare_reads(ref_reads, reads)
 
-    if error:
-        raise ValueError('hmmcopy output does not \
-                        match expected output:' + stdout)
 
 if __name__ == "__main__":
     output_path = sys.argv[1]
