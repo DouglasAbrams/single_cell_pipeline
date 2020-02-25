@@ -45,7 +45,7 @@ def exact_compare_cols(data, reference, column_name):
     
     reference = reference.reindex(index_order)
     data = data.reindex(index_order)
-
+    print(data[column_name], reference[column_name])
     assert data[column_name].equals(reference[column_name])
 
 def reset_indexes(data, refdata):
@@ -350,7 +350,5 @@ def compare_reads(readsdata, refreadsdata):
 def compare_metrics(metrics, refmetrics):
     metrics = load(metrics, ["cell_id"], reindex=True)
     refmetrics = load(refmetrics, ["cell_id"], reindex=True)
-
-    print(metrics, "\n\n", refmetrics)
     compare_tables(metrics, refmetrics)
 
