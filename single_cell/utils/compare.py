@@ -351,5 +351,6 @@ def compare_metrics(metrics, refmetrics):
     metrics = load(metrics, ["cell_id"], reindex=True)
     refmetrics = load(refmetrics, ["cell_id"], reindex=True)
 
+    print(metrics, "\n\n" refmetrics)
     compare_tables(metrics, refmetrics)
 
