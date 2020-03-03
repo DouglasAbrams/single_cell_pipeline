@@ -26,16 +26,16 @@ pipeline{
            //        sh 'bash tests/jenkins/align/align.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //      }
            //  }
-             stage('hmmcopy'){
-                 steps{
-                   sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-                }
-            }
-           // stage('annotation'){
-           //     steps{
-           //       sh 'bash tests/jenkins/annotation/annotation.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-           //    }
-           //}
+           //  stage('hmmcopy'){
+           //      steps{
+           //        sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+           //     }
+           // }
+            stage('annotation'){
+                steps{
+                  sh 'bash tests/jenkins/annotation/annotation.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+               }
+           }
            //  stage('merge_cell_bams'){
            //      steps{
            //        sh 'bash tests/jenkins/merge_cell_bams/merge_cell_bams.sh singlecelltestsets $SINGLECELLTESTSETS'
@@ -51,11 +51,11 @@ pipeline{
            //        sh 'bash tests/jenkins/variant_calling/variant_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //     }
            // }
-             stage('breakpoint_calling'){
-                 steps{
-                   sh 'bash tests/jenkins/breakpoint_calling/breakpoint_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-                }
-            }
+           //  stage('breakpoint_calling'){
+           //      steps{
+           //        sh 'bash tests/jenkins/breakpoint_calling/breakpoint_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+           //     }
+           // }
            //  stage('infer_haps'){
            //      steps{
            //        sh 'bash tests/jenkins/infer_haps/infer_haps.sh singlecelltestsets $SINGLECELLTESTSETS'
