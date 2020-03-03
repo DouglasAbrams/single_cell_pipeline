@@ -12,7 +12,7 @@ docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/va
   $3/single_cell_pipeline:$TAG \
   single_cell variant_calling --input_yaml tests/jenkins/variant_calling/inputs.yaml \
   --maxjobs 4 --nocleanup --sentinel_only  \
-  --context_config tests/jenkins/alignment/context_config.yaml \
+  --context_config tests/jenkins/align/context_config.yaml \
   --submit local --loglevel DEBUG \
   --tmpdir VARIANT_CALLING/temp \
   --pipelinedir VARIANT_CALLING/pipeline --submit local --out_dir VARIANT_CALLING/output \
