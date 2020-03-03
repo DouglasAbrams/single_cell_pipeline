@@ -46,7 +46,6 @@ def exact_compare_cols(data, reference, column_name):
     reference = reference.reindex(index_order)
     data = data.reindex(index_order)
 
-    print(data[column_name], "\n", reference[column_name])
     assert data[column_name].equals(reference[column_name])
 
 def reset_indexes(data, refdata):
