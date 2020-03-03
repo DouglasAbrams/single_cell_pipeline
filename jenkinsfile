@@ -32,11 +32,11 @@ pipeline{
            //        sh 'bash tests/jenkins/hmmcopy/hmmcopy.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //     }
            // }
-            stage('annotation'){
-                steps{
-                  sh 'bash tests/jenkins/annotation/annotation.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-               }
-           }
+           // stage('annotation'){
+           //     steps{
+           //       sh 'bash tests/jenkins/annotation/annotation.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+           //    }
+           //}
            //  stage('merge_cell_bams'){
            //      steps{
            //        sh 'bash tests/jenkins/merge_cell_bams/merge_cell_bams.sh singlecelltestsets $SINGLECELLTESTSETS'
@@ -47,11 +47,11 @@ pipeline{
            //        sh 'bash tests/jenkins/split_wgs_bam/split_wgs_bam.sh singlecelltestsets $SINGLECELLTESTSETS'
            //     }
            // }
-           //  stage('variant_calling'){
-           //      steps{
-           //        sh 'bash tests/jenkins/variant_calling/variant_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
-           //     }
-           // }
+             stage('variant_calling'){
+                 steps{
+                   sh 'bash tests/jenkins/variant_calling/variant_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
+                }
+            }
            //  stage('breakpoint_calling'){
            //      steps{
            //        sh 'bash tests/jenkins/breakpoint_calling/breakpoint_calling.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
