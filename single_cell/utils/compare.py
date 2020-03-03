@@ -46,6 +46,7 @@ def exact_compare_cols(data, reference, column_name):
     reference = reference.reindex(index_order)
     data = data.reindex(index_order)
 
+    print(data[column_name], "\n", reference[column_name])
     assert data[column_name].equals(reference[column_name])
 
 def reset_indexes(data, refdata):
@@ -140,14 +141,11 @@ def compare_count_haps(haps, refhaps):
 
     assert not haps.empty
 
-    cols_must_match = ["chromosome", "position", "allele", "allele_id"]
-    cols_must_be_close = ["hap_label"]
+    cols_must_match = ["chromosome", "position", "allele", "allele_id", "hap_label"]
 
     for col in cols_must_match:
         exact_compare_cols(haps, refhaps, col)
 
-    for col in cols_must_be_close:
-        approx_compare_cols(haps, refhaps, col)
 
 def compare_infer_haps(data, refdata):
     data = load(data, ["chromosome", "position"], reindex = True)
