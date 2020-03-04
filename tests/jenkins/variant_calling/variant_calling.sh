@@ -2,7 +2,7 @@
 
 TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
 
-WKDIR=pwd
+WKDIR=$PWD
 cd /mnt
 
 sudo mkdir -p VARIANT_CALLING/ref_test_data
