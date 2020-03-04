@@ -2,6 +2,8 @@
 
 TAG=`git describe --tags $(git rev-list --tags --max-count=1)`
 
+cd /mnt
+
 mkdir -p VARIANT_CALLING/ref_test_data
 
 docker run -v $PWD:$PWD -w $PWD $3/azurecli:v0.0.1 \
