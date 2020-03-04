@@ -21,7 +21,7 @@ sudo docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.soc
   --pipelinedir $WKDIR/VARIANT_CALLING/pipeline --submit local --out_dir $WKDIR/VARIANT_CALLING/output \
   --config_override '{"variant_calling": {"chromosomes": ["6", "8", "17"]}}'
 
-#docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
-#  -v /usr/bin/docker:/usr/bin/docker --rm \
-#  $3/single_cell_pipeline:$TAG \
-#  python tests/jenkins/variant_calling/test_variant_calling.py VARIANT_CALLING/output VARIANT_CALLING/ref_test_data/refdata
+docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /usr/bin/docker:/usr/bin/docker --rm \
+  $3/single_cell_pipeline:$TAG \
+  python $WKDIR/tests/jenkins/variant_calling/test_variant_calling.py $WKDIR/VARIANT_CALLING/output $WKDIR/VARIANT_CALLING/ref_test_data/refdata
