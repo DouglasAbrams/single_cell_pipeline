@@ -39,12 +39,12 @@ pipeline{
            //}
              stage('merge_cell_bams'){
                  steps{
-                    sh 'bash tests/jenkins/merge_cell_bams/merge_cell_bams.sh singlecelltestsets $SINGLECELLTESTSETS'
+                    sh 'bash tests/jenkins/merge_cell_bams/merge_cell_bams.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
                 }
              }
            //  stage('split_wgs_bam'){
            //      steps{
-           //        sh 'bash tests/jenkins/split_wgs_bam/split_wgs_bam.sh singlecelltestsets $SINGLECELLTESTSETS'
+           //        sh 'bash tests/jenkins/split_wgs_bam/split_wgs_bam.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //     }
            // }
            //  stage('variant_calling'){
@@ -59,12 +59,12 @@ pipeline{
            // }
            //  stage('infer_haps'){
            //      steps{
-           //        sh 'bash tests/jenkins/infer_haps/infer_haps.sh singlecelltestsets $SINGLECELLTESTSETS'
+           //        sh 'bash tests/jenkins/infer_haps/infer_haps.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //     }
            // }
            //  stage('count_haps'){
            //      steps{
-           //        sh 'bash tests/jenkins/count_haps/count_haps.sh singlecelltestsets $SINGLECELLTESTSETS'
+           //        sh 'bash tests/jenkins/count_haps/count_haps.sh singlecelltestsets $SINGLECELLTESTSETS singlecellpipelinetest'
            //     }
            // }
          }
