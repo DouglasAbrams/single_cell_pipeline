@@ -5,7 +5,7 @@ import pandas as pd
 import pysam
 
 def get_merged_counts(path):
-    bam_fnames = [file for file in os.listdir(path) if file.endswith(".bam")]
+    bam_fnames = [os.path.join(path, file)tus for file in os.listdir(path) if file.endswith(".bam")]
     bams = [pysam.AlignmentFile(bam, "rb") for bam in bam_fnames]
 
     regions = [fname.split(".")[0] for fname in bam_fnames]
