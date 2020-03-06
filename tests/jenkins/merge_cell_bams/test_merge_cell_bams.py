@@ -8,7 +8,7 @@ def get_merged_counts(path):
     bam_fnames = [os.path.join(path, file) for file in os.listdir(path) if file.endswith(".bam")]
     bams = [pysam.AlignmentFile(bam, "rb") for bam in bam_fnames]
 
-    regions = [fname.split(".")[0] for fname in bam_fnames]
+    regions = [os.path.basename(fname).split(".")[0] for fname in bam_fnames]
     mapped = [bam.mapped for bam in bams]
     unmapped = [bam.unmapped for bam in bams]
     return pd.DataFrame({"interval":regions, "mapped": mapped, "unmapped": unmapped})
@@ -21,7 +21,7 @@ def compare_merge_counts():
     counts = get_merged_counts(output_path)
 
     refcounts = pd.read_csv(refcounts)
-
+    print(counts, "\n\n", refcounts)
     compare.compare_tables(counts, refcounts)
 
 
