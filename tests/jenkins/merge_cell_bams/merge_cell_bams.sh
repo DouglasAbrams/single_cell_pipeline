@@ -17,16 +17,7 @@ docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/va
   --tmpdir MERGE_CELL_BAMS/temp \
   --pipelinedir MERGE_CELL_BAMS/pipeline --submit local --out_dir MERGE_CELL_BAMS/output
 
-LATEST=v0.0.3
-
 docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
   -v /usr/bin/docker:/usr/bin/docker --rm \
-  $3/samtools:$LATEST bash; \
-  sudo for f in MERGE_CELL_BAMS/ref_test_data/testdata/merge-bams/*.bam; do samtools view -f 4 -c $f; done > MERGE_CELL_BAMS/output/unmapped;
-  sudo for f in MERGE_CELL_BAMS/ref_test_data/testdata/merge-bams/*.bam; do samtools view -c $f; done > MERGE_CELL_BAMS/output/mapped;
-  sudo ls MERGE_CELL_BAMS/ref_test_data/testdata/merge-bams/*.bam | awk '{split($0, r, "."); print r[1] }' > MERGE_CELL_BAMS/output/regions
-
-#docker run -w $PWD -v $PWD:$PWD -v /refdata:/refdata -v /var/run/docker.sock:/var/run/docker.sock \
-#  -v /usr/bin/docker:/usr/bin/docker --rm \
-#  $3/single_cell_pipeline:$TAG \
-#  python tests/jenkins/merge_cell_bams/test_merge_cell_bams.py MERGE_CELL_BAMS/output MERGE_CELL_BAMS/ref_test_data/refdata
+  $3/single_cell_pipeline:$TAG \
+  python tests/jenkins/merge_cell_bams/test_merge_cell_bams.py MERGE_CELL_BAMS/output MERGE_CELL_BAMS/ref_test_data/refdata
