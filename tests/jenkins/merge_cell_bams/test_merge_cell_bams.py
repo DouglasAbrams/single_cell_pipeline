@@ -13,19 +13,18 @@ def get_merged_counts(path):
     unmapped = [bam.unmapped for bam in bams]
     return pd.DataFrame({"interval":regions, "mapped": mapped, "unmapped": unmapped})
 
-def compare_split_counts():
+def compare_merge_counts():
     output_path = sys.argv[1]
     ref_path = sys.argv[2]
 
     refcounts = os.path.join(ref_path, "counts.csv")
     counts = get_merged_counts(output_path)
 
-    counts = pd.read_csv(counts)
     refcounts = pd.read_csv(refcounts)
 
     compare.compare_tables(counts, refcounts)
 
 
 if __name__ == "__main__":
-    compare_split_counts()
+    compare_merge_counts()
 
