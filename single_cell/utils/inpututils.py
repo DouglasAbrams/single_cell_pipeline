@@ -286,5 +286,5 @@ def load_cohort_qc_inputs(yaml):
         for library, data in data.items():
             hmmcopy[(sample, library)] = {"hmmcopy": data["hmmcopy_reads"]}
     for sample, data in maf_data.items():
-        mafs[(sample)] = {"germline_maf": data["germline_maf"], "somatic_maf": data["somatic_maf"]}
+        mafs[(sample)] = data
     return cohort, mafs, hmmcopy

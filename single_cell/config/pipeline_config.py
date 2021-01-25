@@ -492,6 +492,7 @@ def get_cohort_qc_params(reference_dir, reference, version):
             'single_cell_pipeline': docker_containers['single_cell_pipeline'],
             'vcf2maf': docker_containers['vcf2maf'],
             'pseudo_bulk_qc_html_report': docker_containers['pseudo_bulk_qc_html_report'],
+            
         },
     }
     return {'cohort_qc': params}

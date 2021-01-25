@@ -1,10 +1,11 @@
 import os
-
 import pypeliner
 import pypeliner.managed as mgd
 from single_cell.utils import inpututils
 
+
 def cohort_qc_pipeline(args):
+
     config = inpututils.load_config(args)
     config = config["cohort_qc"]
 
@@ -25,13 +26,11 @@ def cohort_qc_pipeline(args):
 
     hmmcopy_files = {label: data["hmmcopy"] for label, data in hmmcopy.items()}
 
-    cna_table = os.path.join(out_dir, cohort, "cna_table.tsv.gz")
+    cna_cbioportal_table = os.path.join(out_dir, cohort, "cna_table.tsv.gz")
     segments = os.path.join(out_dir, cohort, "segments.tsv.gz")
 
     cohort_maf_oncogenic_filtered = os.path.join(out_dir, cohort, "cohort_oncogenic_filtered.maf")
     cohort_oncoplot = os.path.join(out_dir, cohort, "cohort_oncoplot.png")
-
-
 
     workflow.setobj(
         obj=mgd.OutputChunks('sample_label', 'library_label'),
@@ -44,7 +43,8 @@ def cohort_qc_pipeline(args):
         args=(
             config,
             mgd.InputFile('hmmcopy_dict', 'sample_label', 'library_label', fnames=hmmcopy_files, axes_origin=[]),
-            mgd.OutputFile(cna_table),
+            mgd.OutputFile(cna_cbioportal_table),
+            mgd.TempOutputFile("cna_maftools_table"),
             mgd.OutputFile(segments),
             gtf,
         ),
@@ -70,10 +70,9 @@ def cohort_qc_pipeline(args):
             cohort,
             out_dir,
             mgd.InputFile(cohort_maf_oncogenic_filtered),
-            mgd.InputFile(cna_table),
+            mgd.InputFile(cna),
             mgd.OutputFile(cohort_oncoplot)
         ),
     )   
-
 
     pyp.run(workflow)
