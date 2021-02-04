@@ -3,8 +3,6 @@ import os
 
 import pypeliner
 import pypeliner.managed as mgd
-from wgs.config import config
-
 
 def cna_annotation_workflow(config, hmmcopy_dict, output_cbio_table, 
     output_maftools_table, output_segs, gtf):
