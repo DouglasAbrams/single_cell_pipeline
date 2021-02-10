@@ -247,8 +247,8 @@ def load_cohort_qc_inputs(yaml):
     data = yaml[cohort]
     mafs = {}
     hmmcopy={}
-    maf_data=data["MAFS"]
-    hmmcopy_data=data["HMMCOPY"]
+    maf_data=data["mafs"]
+    hmmcopy_data=data["hmmcopy"]
     for sample, data in hmmcopy_data.items():
         for library, data in data.items():
             hmmcopy[(sample, library)] = {"hmmcopy": data["hmmcopy_reads"]}

@@ -47,6 +47,7 @@ def get_maftools_paths(root_dir):
     Returns:
         [dict]: [labeled output paths]
     """
+
     if not os.path.exists(os.path.join(root_dir, "maftools")):
         os.makedirs(os.path.join(root_dir, "maftools"))
 
@@ -71,7 +72,7 @@ def cohort_qc_pipeline(args):
     """Process maf, run classify copynumber, make plots.
 
     Args:
-        args ([type]): [description]
+        args ([dict]): [pipeline arguments]
     """
     config = inpututils.load_config(args)
     config = config["cohort_qc"]
@@ -82,6 +83,9 @@ def cohort_qc_pipeline(args):
         ctx={'docker_image': config['docker']['single_cell_pipeline']}
     )
 
+    out_dir = args["out_dir"]
+    api_key = args["API_key"]
+
     meta_yaml = os.path.join(args['out_dir'], 'metadata.yaml')
     input_yaml_blob = os.path.join(args['out_dir'], 'input.yaml')
 
@@ -90,31 +94,19 @@ def cohort_qc_pipeline(args):
         args["input_yaml"]
     )
 
-    out_dir = args["out_dir"]
-    api_key = args["API_key"]
-    gtf = config["gtf"]
-
     germline_mafs = {
         label: data["germline_maf"] for label, data in mafs.items()
     }
-    somatic_mafs = {label: data["somatic_maf"] for label, data in mafs.items()}
-    hmmcopy_files = {label: data["hmmcopy"] for label, data in hmmcopy.items()}
+    somatic_mafs = {
+        label: data["somatic_maf"] for label, data in mafs.items()
+    }
+    hmmcopy_files = {
+        label: data["hmmcopy"] for label, data in hmmcopy.items()
+    }
 
     # outputs
-    # cbioportal
-    cbiofilepaths = get_cbioportal_paths(os.path.join(out_dir, cohort))
-
-    cna_cbioportal_table = cbiofilepaths["cna_table"]
-    segments = cbiofilepaths["segments"]
-    filtered_germline_maf = cbiofilepaths["filtered_germline_maf"]
-    annotated_somatic_maf = cbiofilepaths["annotated_somatic_maf"]
-
-    # maftools
-    maftoolsfilepaths = get_maftools_paths(os.path.join(out_dir, cohort))
-
-    cohort_oncoplot = maftoolsfilepaths["cohort_oncoplot"]
-    maftools_maf = maftoolsfilepaths["maftools_maf"]
-    maftools_cna = maftoolsfilepaths["maftools_cna"]
+    cbiofile_paths = get_cbioportal_paths(os.path.join(out_dir, cohort))
+    maftools_filepaths = get_maftools_paths(os.path.join(out_dir, cohort))
 
     workflow.setobj(
         obj=mgd.OutputChunks('sample_label', 'library_label'),
@@ -130,10 +122,10 @@ def cohort_qc_pipeline(args):
                 'hmmcopy_dict', 'sample_label', 'library_label',
                 fnames=hmmcopy_files, axes_origin=[]
             ),
-            mgd.OutputFile(cna_cbioportal_table),
-            mgd.OutputFile(maftools_cna),
-            mgd.OutputFile(segments),
-            gtf,
+            mgd.OutputFile(cbiofile_paths["cna_table"]),
+            mgd.OutputFile(maftools_filepaths["maftools_cna"]),
+            mgd.OutputFile(cbiofile_paths["segments"]),
+            config["gtf"],
         ),
     )
 
@@ -150,8 +142,8 @@ def cohort_qc_pipeline(args):
                 'somatic_mafs_dict',  'sample_label',
                 fnames=somatic_mafs, axes_origin=[]
             ),
-            mgd.OutputFile(filtered_germline_maf),
-            mgd.OutputFile(annotated_somatic_maf),
+            mgd.OutputFile(cbiofile_paths["filtered_germline_maf"]),
+            mgd.OutputFile(cbiofile_paths["annotated_somatic_maf"]),
             api_key
         ),
     )
@@ -160,13 +152,11 @@ def cohort_qc_pipeline(args):
         func="single_cell.workflows.cohort_qc.create_cohort_oncoplot",
         args=(
             config,
-            cohort,
-            out_dir,
-            mgd.InputFile(filtered_germline_maf),
-            mgd.InputFile(annotated_somatic_maf),
-            mgd.InputFile(maftools_cna),
-            mgd.OutputFile(maftools_maf),
-            mgd.OutputFile(cohort_oncoplot)
+            mgd.InputFile(cbiofile_paths["filtered_germline_maf"]),
+            mgd.InputFile(cbiofile_paths["annotated_somatic_maf"]),
+            mgd.InputFile(maftools_filepaths["maftools_cna"]),
+            mgd.OutputFile(maftools_filepaths["maftools_maf"]),
+            mgd.OutputFile(maftools_filepaths["cohort_oncoplot"])
         ),
     )
 
@@ -176,7 +166,7 @@ def cohort_qc_pipeline(args):
         args=(
             sys.argv[0:],
             args['out_dir'],
-            list(cbiofilepaths.values()) + list(maftoolsfilepaths.values()),
+            list(cbiofile_paths.values()) + list(maftools_filepaths.values()),
             mgd.OutputFile(meta_yaml)
         ),
         kwargs={
