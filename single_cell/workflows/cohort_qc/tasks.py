@@ -255,11 +255,8 @@ def annotate_maf_with_oncokb(
     '''
     helpers.makedirs(tmpspace)
 
-    # cmd = [
-    #     "MafAnnotator.py", "-i", maf, "-o", annotated_maf, "-b", api_key
-    # ]
     cmd = [
-        "python","/juno/work/shah/abramsd/CODE/oncokb-annotator/MafAnnotator.py", "-i", maf, "-o", annotated_maf, "-b", api_key
+         "MafAnnotator.py", "-i", maf, "-o", annotated_maf, "-b", api_key
     ]
 
     pypeliner.commandline.execute(*cmd, docker_image=docker_image)
