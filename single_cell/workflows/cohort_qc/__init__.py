@@ -1,6 +1,5 @@
 import logging
 import os
-
 import pypeliner
 import pypeliner.managed as mgd
 from wgs.config import config
@@ -94,7 +93,7 @@ def cna_annotation_workflow(config, hmmcopy_dict, output_cbio_table,
     return workflow
 
 
-def preprocess_mafs_workflow(config, germline_mafs, somatic_mafs, cohort_maf, api_key):
+def preprocess_mafs_workflow(config, germline_mafs, somatic_mafs, cohort_germline_maf, cohort_somatic_maf, api_key):
     workflow = pypeliner.workflow.Workflow(
         ctx={'docker_image': config['docker']['single_cell_pipeline']}
     )
@@ -127,6 +126,15 @@ def preprocess_mafs_workflow(config, germline_mafs, somatic_mafs, cohort_maf, ap
     )
 
     workflow.transform(
+        name='merge_germline_mafs',
+        func='single_cell.workflows.cohort_qc.tasks.merge_mafs',
+        args=(
+            mgd.TempInputFile("filtered_germline_maf", 'sample_label',  axes_origin=[]),
+            mgd.OutputFile(cohort_germline_maf)
+        ),
+    )
+
+    workflow.transform(
         name='annotate_somatic_mafs',
         func='single_cell.workflows.cohort_qc.tasks.annotate_maf_with_oncokb',
         axes=("sample_label",),
@@ -137,43 +145,19 @@ def preprocess_mafs_workflow(config, germline_mafs, somatic_mafs, cohort_maf, ap
             mgd.TempOutputFile("annotated_somatic_maf", 'sample_label'),
         ),
     )
-
     workflow.transform(
-        name='annotate_germline_class',
-        func='single_cell.workflows.cohort_qc.tasks.annotate_germline_somatic',
-        axes=("sample_label",),
-        args=(
-            mgd.TempInputFile('filtered_germline_maf', 'sample_label'),
-            mgd.TempOutputFile("filtered_class_labeled_germline_maf", 'sample_label'),
-            True
-        ),
-    )
-
-    workflow.transform(
-        name='annotate_somatic_class',
-        func='single_cell.workflows.cohort_qc.tasks.annotate_germline_somatic',
-        axes=("sample_label",),
-        args=(
-            mgd.TempInputFile('annotated_somatic_maf', 'sample_label'),
-            mgd.TempOutputFile("class_labeled_somatic_maf", 'sample_label'),
-            False
-        ),
-    )
-
-    workflow.transform(
-        name='merge_filtered_germline_somatic',
+        name='merge_somatic_mafs',
         func='single_cell.workflows.cohort_qc.tasks.merge_mafs',
         args=(
-            mgd.TempInputFile("filtered_class_labeled_germline_maf", 'sample_label', axes_origin=[]),
-            mgd.TempInputFile('class_labeled_somatic_maf', 'sample_label', axes_origin=[]),
-            mgd.OutputFile(cohort_maf),
+            mgd.TempInputFile("annotated_somatic_maf", 'sample_label', axes_origin=[]),
+            mgd.OutputFile(cohort_somatic_maf)
         ),
     )
 
     return workflow
 
 
-def create_cohort_oncoplot(config, cohort, out_dir,  cohort_maf, cna_table, oncoplot):
+def create_cohort_oncoplot(config, cohort, out_dir,  merged_germline, merged_somatic, maftools_cna, maftools_maf, oncoplot):
 
     workflow = pypeliner.workflow.Workflow(
         ctx={'docker_image': config['docker']['single_cell_pipeline']}
@@ -186,8 +170,9 @@ def create_cohort_oncoplot(config, cohort, out_dir,  cohort_maf, cna_table, onco
         func='single_cell.workflows.cohort_qc.tasks.prepare_maf_for_maftools',
         args=(
             cohort,
-            mgd.InputFile(cohort_maf),
-            mgd.TempOutputFile("prepared_maf"),
+            mgd.InputFile(merged_germline),
+            mgd.InputFile(merged_somatic),
+            mgd.OutputFile(maftools_maf),
             non_synonymous_labels,
             mgd.TempOutputFile("vcNames")
         ),
@@ -197,8 +182,8 @@ def create_cohort_oncoplot(config, cohort, out_dir,  cohort_maf, cna_table, onco
         name='make_oncoplot',
         func='single_cell.workflows.cohort_qc.tasks.make_oncoplot',
         args=(
-            mgd.TempInputFile("prepared_maf"),
-            mgd.InputFile(cna_table),
+            mgd.InputFile(maftools_maf),
+            mgd.InputFile(maftools_cna),
             mgd.OutputFile(oncoplot),
             mgd.TempInputFile("vcNames")
 

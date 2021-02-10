@@ -1,0 +1,11 @@
+SPECTRUM:
+  MAFS:
+    SPECTRUM-OV-042:
+      germline_maf: COHORT_QC/ref_test_data/testdata/germline.maf
+      somatic_maf: COHORT_QC/ref_test_data/testdata/somatic.maf
+  HMMCOPY:
+    SPECTRUM-OV-042:
+      A108838B:
+        hmmcopy_reads: COHORT_QC/ref_test_data/testdata/A108838B_reads.csv.gz
+      A108836A:
+        hmmcopy_reads: COHORT_QC/ref_test_data/testdata/A108836A_reads.csv.gz
